@@ -14,8 +14,6 @@ class Man:
         return f'''
         I'm {self.name}.
         My satiety is {self.satiety}.
-        There is {self.food} food left.
-        I have {self.money} money left.
         '''
 
     def eat(self):
@@ -46,14 +44,14 @@ class Man:
     def move_in_house(self, house):
         self.house = house
         self.satiety -= 10
-        print(f'{self.name} moved into the house.')
+        cprint(f'{self.name} moved into the house.', color='blue')
 
     def act(self):
         if self.satiety <= 0:
             cprint(f'{self.name} died...', color='red')
             return
         dice = randint(1, 6)
-        if self.satiety <= 20:
+        if self.satiety <= 20 and self.name != 'Kenny':
             self.eat()
         elif self.house.food < 10:
             self.shopping()
@@ -74,18 +72,23 @@ class House:
         self.money = 50
 
     def __str__(self):
-        return f'''
-        There is {self.food} food left.
-        I have {self.money} money left.
-        '''
+        return f'There is {self.food} food and {self.money} money left in the house'
 
 
-beavis = Man('Beavis')
-butthead = Man('Butthead')
+residents = [
+    Man('Beavis'),
+    Man('Butthead'),
+    Man('Kenny')
+]
+
+my_sweet_home = House()
+for resident in residents:
+    resident.move_in_house(house=my_sweet_home)
 
 for day in range(1, 366):
-    cprint(f'============== DAY NUMBER {day} ==============', color='yellow')
-    beavis.act()
-    butthead.act()
-    print(beavis)
-    print(butthead)
+    cprint(f'\n============== DAY NUMBER {day} ==============', color='yellow')
+    for resident in residents:
+        resident.act()
+    for resident in residents:
+        print(resident)
+    print(my_sweet_home)
